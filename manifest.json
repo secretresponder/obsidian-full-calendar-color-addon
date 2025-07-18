@@ -1,7 +1,7 @@
 {
   "id": "obsidian-full-calendar-color-addon",
   "name": "Full Calendar Color Addon",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "minAppVersion": "0.12.0",
   "description": "Addon for Full Calendar to support custom event colors.",
   "author": "secretresponder",
