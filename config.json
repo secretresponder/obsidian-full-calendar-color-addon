@@ -1,0 +1,6 @@
+config_json = {
+    "fire": "#FD4444",
+    "water": "#3E46AC",
+    "air": "#5282AE",
+    "earth": "#644B28"
+}

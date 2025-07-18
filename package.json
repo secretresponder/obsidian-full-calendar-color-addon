@@ -1,0 +1,16 @@
+{
+  "name": "obsidian-full-calendar-color_addon",
+  "version": "1.0.0",
+  "description": "Adds color-coding to Full Calendar events.",
+  "main": "main.js",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.1",
+    "obsidian": "^1.0.0",
+    "rollup": "^3.26.3",
+    "rollup-plugin-typescript2": "^0.35.0",
+    "typescript": "^5.0.4"
+  }
+}

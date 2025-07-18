@@ -1,0 +1,10 @@
+manifest = {
+    "id": "obsidian-full-calendar-color_addon",
+    "name": "Full Calendar Color Addon",
+    "version": "1.0.0",
+    "minAppVersion": "1.0.0",
+    "description": "Adds color-coding to Full Calendar events based on title content.",
+    "author": "Архитектор",
+    "authorUrl": "",
+    "isDesktopOnly": True
+}
