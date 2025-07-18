@@ -1,4 +1,3 @@
-manifest = {
     "id": "obsidian-full-calendar-color_addon",
     "name": "Full Calendar Color Addon",
     "version": "1.0.0",
@@ -7,4 +6,3 @@ manifest = {
     "author": "Архитектор",
     "authorUrl": "",
     "isDesktopOnly": True
-}
