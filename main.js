@@ -41,7 +41,7 @@ class FullCalendarColorAddon extends obsidian.Plugin {
             // Чтение config.json из директории плагина
             let config = {};
             try {
-                const raw = yield this.app.vault.adapter.read(`${this.manifest.dir}/config.json`);
+                const raw = yield this.app.vault.adapter.read(`${this.app.vault.configDir}/plugins/${this.manifest.id}/config.json`);
                 config = JSON.parse(raw);
             }
             catch (err) {

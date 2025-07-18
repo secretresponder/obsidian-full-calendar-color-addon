@@ -8,7 +8,7 @@ export default class FullCalendarColorAddon extends Plugin {
     let config: Record<string, string> = {};
 
     try {
-      const raw = await this.app.vault.adapter.read(`${this.manifest.dir}/config.json`);
+      const raw = await this.app.vault.adapter.read(`${this.app.vault.configDir}/plugins/${this.manifest.id}/config.json`);
       config = JSON.parse(raw);
     } catch (err) {
       console.error("Failed to load color config:", err);
