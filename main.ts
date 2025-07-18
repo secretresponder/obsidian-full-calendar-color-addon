@@ -4,14 +4,25 @@ export default class FullCalendarColorAddon extends Plugin {
   async onload() {
     console.log("Full Calendar Color Addon loaded");
 
-    // Чтение config.json из директории плагина
     let config: Record<string, string> = {};
+    let refreshInterval = 30_000; // fallback по умолчанию
 
     try {
-      const raw = await this.app.vault.adapter.read(`${this.app.vault.configDir}/plugins/${this.manifest.id}/config.json`);
+      const raw = await this.app.vault.adapter.read(
+        `${this.app.vault.configDir}/plugins/${this.manifest.id}/config.json`
+      );
       config = JSON.parse(raw);
+
+      // Забираем refreshInterval, если указан
+      if ("refreshInterval" in config) {
+        const rawInterval = Number(config["refreshInterval"]);
+        if (!isNaN(rawInterval) && rawInterval >= 1000) {
+          refreshInterval = rawInterval;
+        }
+        delete config["refreshInterval"]; // Удалим, чтобы не обрабатывался как keyword
+      }
     } catch (err) {
-      console.error("Failed to load color config:", err);
+      console.error("Failed to load config:", err);
       return;
     }
 
@@ -32,18 +43,29 @@ export default class FullCalendarColorAddon extends Plugin {
       });
     }
 
-    // Наблюдаем за изменениями DOM календаря
+    // Слежение за DOM-обновлениями
     const observer = new MutationObserver(classifyEvents);
     observer.observe(document.body, {
       childList: true,
       subtree: true
     });
 
-    // Повторная перекраска после отложенной отрисовки
+    // Повторная перекраска (на случай отложенной отрисовки)
     let attempts = 0;
     const interval = setInterval(() => {
       classifyEvents();
       if (++attempts > 20) clearInterval(interval);
     }, 500);
+
+    // Обновление событий Full Calendar с интервалом из конфига
+    this.registerInterval(
+      setInterval(() => {
+        // @ts-ignore
+        const plugin = app.plugins.plugins["obsidian-full-calendar"];
+        plugin?.cache?.revalidateRemoteCalendars(true);
+      }, refreshInterval)
+    );
+
+    console.log(`Revalidation every ${refreshInterval}ms`);
   }
 }

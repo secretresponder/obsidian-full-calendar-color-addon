@@ -38,14 +38,22 @@ class FullCalendarColorAddon extends obsidian.Plugin {
     onload() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Full Calendar Color Addon loaded");
-            // Чтение config.json из директории плагина
             let config = {};
+            let refreshInterval = 30000; // fallback по умолчанию
             try {
                 const raw = yield this.app.vault.adapter.read(`${this.app.vault.configDir}/plugins/${this.manifest.id}/config.json`);
                 config = JSON.parse(raw);
+                // Забираем refreshInterval, если указан
+                if ("refreshInterval" in config) {
+                    const rawInterval = Number(config["refreshInterval"]);
+                    if (!isNaN(rawInterval) && rawInterval >= 1000) {
+                        refreshInterval = rawInterval;
+                    }
+                    delete config["refreshInterval"]; // Удалим, чтобы не обрабатывался как keyword
+                }
             }
             catch (err) {
-                console.error("Failed to load color config:", err);
+                console.error("Failed to load config:", err);
                 return;
             }
             function classifyEvents() {
@@ -63,19 +71,27 @@ class FullCalendarColorAddon extends obsidian.Plugin {
                     }
                 });
             }
-            // Наблюдаем за изменениями DOM календаря
+            // Слежение за DOM-обновлениями
             const observer = new MutationObserver(classifyEvents);
             observer.observe(document.body, {
                 childList: true,
                 subtree: true
             });
-            // Повторная перекраска после отложенной отрисовки
+            // Повторная перекраска (на случай отложенной отрисовки)
             let attempts = 0;
             const interval = setInterval(() => {
                 classifyEvents();
                 if (++attempts > 20)
                     clearInterval(interval);
             }, 500);
+            // Обновление событий Full Calendar с интервалом из конфига
+            this.registerInterval(setInterval(() => {
+                var _a;
+                // @ts-ignore
+                const plugin = app.plugins.plugins["obsidian-full-calendar"];
+                (_a = plugin === null || plugin === void 0 ? void 0 : plugin.cache) === null || _a === void 0 ? void 0 : _a.revalidateRemoteCalendars(true);
+            }, refreshInterval));
+            console.log(`Revalidation every ${refreshInterval}ms`);
         });
     }
 }
